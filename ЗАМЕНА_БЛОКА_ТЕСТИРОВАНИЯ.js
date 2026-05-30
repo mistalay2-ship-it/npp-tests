@@ -273,7 +273,8 @@ function nm10OpenTest(){
   if(old) old.remove();
   var el = document.createElement('div');
   el.innerHTML = html;
-  document.body.appendChild(el.firstChild);
+  var root = document.getElementById('npp-root') || document.body;
+root.appendChild(el.firstChild);
 
   nm10LoadQ();
 }
