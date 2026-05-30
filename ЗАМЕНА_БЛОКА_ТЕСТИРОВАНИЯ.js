@@ -339,12 +339,13 @@ async function nm10ShowResult(){
   }
 
   var retryBtn = rem > 0
-    ? '<button onclick="nm10Restart()" style="width:100%;padding:13px;background:linear-gradient(135deg,#c8b4e8,#e4aad4);color:#fff;border:none;border-radius:12px;font-family:Unbounded,sans-serif;font-size:12px;font-weight:700;cursor:pointer;margin-bottom:12px;">Пройти ещё раз (осталось: '+rem+')</button>'
+    ? '<button onclick="nm10Restart()" style="width:100%;box-sizing:border-box;padding:13px;background:linear-gradient(135deg,#c8b4e8,#e4aad4);color:#fff;border:none;border-radius:12px;font-family:Unbounded,sans-serif;font-size:12px;font-weight:700;cursor:pointer;margin-bottom:12px;">Пройти ещё раз (осталось: '+rem+')</button>'
     : '<div style="background:#f8f8f8;border-radius:12px;padding:14px 16px;margin-bottom:12px;text-align:center;border:1.5px solid #eee;"><div style="font-family:Unbounded,sans-serif;font-size:12px;font-weight:700;color:#555;margin-bottom:5px;">Все попытки использованы</div><div style="font-size:12px;color:#888;line-height:1.7;">Ваш лучший результат сохранён.<br>Для разблокировки обратитесь к куратору.</div></div>';
 
   var body = document.getElementById('nm10-body');
   if(!body) return;
-  body.innerHTML = '<div style="border-radius:18px;background:linear-gradient(135deg,'+(passed?'#a0d8b8,#60c090':'#e4aad4,#c8b4e8')+');padding:22px 20px;text-align:center;margin-bottom:16px;">'
+  body.innerHTML = '<div style="box-sizing:border-box;width:100%;">'
+    +'<div style="border-radius:18px;background:linear-gradient(135deg,'+(passed?'#a0d8b8,#60c090':'#e4aad4,#c8b4e8')+');padding:22px 20px;text-align:center;margin-bottom:16px;">'
     +'<div style="display:inline-flex;flex-direction:column;align-items:center;background:rgba(255,255,255,.2);border:2px solid rgba(255,255,255,.4);border-radius:50%;width:100px;height:100px;justify-content:center;margin-bottom:10px;">'
     +'<div style="font-family:Unbounded,sans-serif;font-size:34px;font-weight:900;color:#fff;line-height:1;">'+nm10Sc+'</div>'
     +'<div style="font-size:11px;color:rgba(255,255,255,.8);margin-top:2px;">из 40</div></div>'
@@ -357,7 +358,8 @@ async function nm10ShowResult(){
     +'</div>'
     +(nm10State.best!==null?'<div style="background:rgba(200,180,240,.1);border:1px solid rgba(200,180,240,.3);border-radius:9px;padding:9px 13px;margin-bottom:14px;display:flex;align-items:center;justify-content:space-between;"><span style="font-size:11px;color:#888;font-weight:500;">Лучший результат за все попытки</span><span style="font-family:Unbounded,sans-serif;font-size:14px;font-weight:700;color:#c879a8;">'+nm10State.best+' из 40</span></div>':'')
     +retryBtn
-    +missHtml;
+    +missHtml
+    +'</div>';
 
   body.scrollTop = 0;
   nppBTests();
