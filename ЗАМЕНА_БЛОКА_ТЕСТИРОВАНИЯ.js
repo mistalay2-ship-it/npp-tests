@@ -196,10 +196,10 @@ function nppBTests(){
     +(clickable?' onclick="nm10OpenTest()"':'')+'>'
     +leftBar
     +'<div class="test-num" style="font-size:14px;">1</div>'
-    +'<div class="test-info" style="min-width:0;">'
-    +'<span style="font-size:9px;font-weight:600;letter-spacing:1.5px;text-transform:uppercase;color:var(--muted);">Итоговый тест · Модуль 10</span>'
-    +'<span class="test-title" style="margin-top:4px;display:block;">Анатомия голоса — 40 вопросов</span>'
-    +'<span class="test-meta">Порог зачёта: 36 из 40 (90%) · 3 попытки'+(passed?' · <span style="color:#408060;font-weight:600;">✓ Зачёт получен</span>':'')+'</span>'
+    +'<div class="test-info" style="min-width:0;overflow:hidden;">'
+    +'<span style="font-size:9px;font-weight:600;letter-spacing:1px;text-transform:uppercase;color:var(--muted);white-space:nowrap;display:block;overflow:hidden;text-overflow:ellipsis;">Итоговый тест · Модуль 10</span>'
+    +'<span class="test-title" style="margin-top:3px;display:block;font-size:13px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">Анатомия голоса — 40 вопросов</span>'
+    +'<span class="test-meta" style="display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">Порог зачёта: 36 из 40 (90%) · 3 попытки'+(passed?' · <span style="color:#408060;font-weight:600;">✓ Зачёт получен</span>':'')+'</span>'
     +attInfo
     +'</div>'
     +statusHtml
