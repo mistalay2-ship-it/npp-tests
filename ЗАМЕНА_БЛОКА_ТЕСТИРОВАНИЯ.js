@@ -24,7 +24,7 @@ var NM10_QS = [
 {q:'Что делают щиточерпаловидная, поперечночерпаловидная и черпалонадгортанная мышцы при совместном сокращении?',o:['Расширяют голосовую щель','Натягивают голосовые связки','Работают как сфинктер, закрывая гортань','Поднимают надгортанник'],a:2,e:'Действуя вместе, они работают как сфинктер — закрывают гортань при каждом глотании.'},
 {q:'Щитоподъязычная мышца при стабилизированной подъязычной кости выполняет функцию:',o:['Опускает гортань вниз','Приподнимает гортань вверх','Натягивает голосовые складки','Расширяет голосовую щель'],a:1,e:'При фиксированной подъязычной кости щитоподъязычная мышца приподнимает гортань.'},
 {q:'На сколько функциональных групп делятся внутренние мышцы гортани?',o:['На две','На три','На четыре','На пять'],a:2,e:'Четыре группы: суживающие, расширяющие, напрягающие и расслабляющие.'},
-{q:'Что делает щитонадгортанная мышца?',o:['Опускает надгортанник, закрывая гортань','Поднимает надгортанник и открывает вход в гортань','Натягивает голосовые складки','Расширяет голосовую щель'],a:1,e:'Щитонадгортанная мышца поднимает надгортанник и открывает вход в гортань.'},
+{q:'Что делает щитонадгортанная мышца?',o:['Опускает надгортанник, закрывая гортань','Поднимает надгортанник и открывает вход в гортань','Натягивает голосовые связки','Расширяет голосовую щель'],a:1,e:'Щитонадгортанная мышца поднимает надгортанник и открывает вход в гортань.'},
 {q:'Как запомнить механику движения внутренних мышц гортани?',o:['По длине мышцы','По расположению на шее','Название отражает направление волокна','По цвету мышечной ткани'],a:2,e:'Название мышцы указывает на направление её хода.'},
 {q:'Как правильно называть «ложные голосовые связки»?',o:['Истинные голосовые связки','Складки преддверия или желудочковые складки','Эластические складки','Мембранозные складки'],a:1,e:'Современные названия: складки преддверия или желудочковые складки.'},
 {q:'Какую форму имеют голосовые складки при виде сверху?',o:['Форму буквы U','Форму буквы О','Форму латинской буквы V','Форму буквы Х'],a:2,e:'Голосовые складки имеют форму латинской буквы V: острие вперёд к щитовидному хрящу.'},
@@ -215,8 +215,9 @@ function nm10OpenTest(){
 
   nm10Cur=0; nm10Sc=0; nm10Ans=false; nm10Miss=[]; nm10IsOpen=true;
 
+  /* *** ИСПРАВЛЕНО: высота окна ограничена, содержимое прокручивается *** */
   var html = '<div id="nm10Modal" onclick="nm10CloseIfOvl(event)" style="position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,.55);z-index:99999;display:flex;align-items:center;justify-content:center;padding:16px;box-sizing:border-box;">'
-    +'<div style="width:100%;max-width:700px;border-radius:24px;overflow:hidden;background:#fff;max-height:90vh;display:flex;flex-direction:column;box-shadow:0 24px 80px rgba(0,0,0,.25);">'
+    +'<div style="width:100%;max-width:700px;border-radius:24px;overflow:hidden;background:#fff;height:88vh;max-height:88vh;display:flex;flex-direction:column;box-shadow:0 24px 80px rgba(0,0,0,.25);">'
     +'<div style="padding:18px 22px 14px;background:linear-gradient(135deg,#d4c4f0,#e4aad4);position:relative;flex-shrink:0;">'
     +'<button onclick="nm10Close()" style="position:absolute;top:12px;right:12px;background:rgba(255,255,255,.3);border:none;border-radius:50%;width:28px;height:28px;cursor:pointer;font-size:14px;color:#fff;display:flex;align-items:center;justify-content:center;line-height:1;">✕</button>'
     +'<div style="font-size:9px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:rgba(255,255,255,.8);margin-bottom:4px;">Модуль 10 · Итоговый тест</div>'
@@ -271,11 +272,11 @@ function nm10Answer(idx){
   btns.forEach(function(b,i){
     b.disabled = true;
     b.style.cursor = 'default';
-    /* *** Подсвечиваем ТОЛЬКО неправильный выбор, правильный НЕ показываем *** */
-    if(i === idx && idx !== q.a){
-      b.style.background = '#FFF5F5';
-      b.style.borderColor = '#FC8181';
-      b.style.color = '#9B2C2C';
+    b.style.opacity = '0.5';
+    if(i === idx){
+      b.style.opacity = '1';
+      b.style.background = '#F0EEF8';
+      b.style.borderColor = '#9b7ed4';
     }
   });
   if(idx === q.a) nm10Sc++;
@@ -314,7 +315,6 @@ async function nm10ShowResult(){
     0:'Нужно повторить все уроки модуля.'};
   var msgKey = Object.keys(msgs).reverse().find(function(k){ return pct >= Number(k); });
 
-  /* *** Разбор ошибок — только после 3-й (последней) попытки *** */
   var missHtml = '';
   if(nm10Miss.length > 0 && isLastAttempt){
     missHtml = '<div style="margin-top:16px;"><div style="font-family:Unbounded,sans-serif;font-size:11px;font-weight:700;color:#1A1A2E;margin-bottom:10px;">Разбор ошибок ('+nm10Miss.length+')</div>';
