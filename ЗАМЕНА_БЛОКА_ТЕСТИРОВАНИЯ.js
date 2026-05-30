@@ -226,7 +226,7 @@ function nm10OpenTest(){
     +'<div style="flex:1;height:3px;background:rgba(255,255,255,.3);border-radius:3px;overflow:hidden;"><div id="nm10-prog" style="height:100%;width:0%;background:#fff;border-radius:3px;transition:width .3s;"></div></div>'
     +'<span id="nm10-prog-lbl" style="font-size:10px;color:rgba(255,255,255,.85);white-space:nowrap;font-weight:600;">1 / 40</span>'
     +'</div></div>'
-    +'<div id="nm10-body" style="overflow-y:auto;flex:1;padding:20px 22px;"></div>'
+    +'<div id="nm10-body" style="overflow-y:auto;overflow-x:hidden;flex:1;padding:16px 20px;"></div>'
     +'</div></div>';
 
   var old = document.getElementById('nm10Modal');
@@ -248,17 +248,17 @@ function nm10LoadQ(){
 
   var L = ['А','Б','В','Г'];
   var opts = q.o.map(function(o,i){
-    return '<button class="nm10-opt" onclick="nm10Answer('+i+')" style="display:flex;align-items:flex-start;gap:12px;background:#FAFAFA;border:1.5px solid #E8E8E8;border-radius:11px;padding:12px 14px;cursor:pointer;font-family:Montserrat,sans-serif;font-size:13px;color:#333;line-height:1.5;text-align:left;width:100%;margin-bottom:8px;transition:all .18s;">'
-      +'<span style="width:25px;height:25px;flex-shrink:0;border-radius:7px;background:rgba(200,180,240,.15);display:flex;align-items:center;justify-content:center;font-family:Unbounded,sans-serif;font-size:10px;font-weight:700;color:#9b7ed4;">'+L[i]+'</span>'
-      +'<span>'+o+'</span></button>';
+    return '<button class="nm10-opt" onclick="nm10Answer('+i+')" style="display:flex;align-items:center;gap:10px;background:#FAFAFA;border:1.5px solid #E8E8E8;border-radius:10px;padding:9px 12px;cursor:pointer;font-family:Montserrat,sans-serif;font-size:12px;color:#333;line-height:1.4;text-align:left;width:100%;box-sizing:border-box;margin-bottom:6px;transition:all .18s;">'
+      +'<span style="width:22px;height:22px;flex-shrink:0;border-radius:6px;background:rgba(200,180,240,.15);display:flex;align-items:center;justify-content:center;font-family:Unbounded,sans-serif;font-size:9px;font-weight:700;color:#9b7ed4;">'+L[i]+'</span>'
+      +'<span style="min-width:0;word-break:break-word;">'+o+'</span></button>';
   }).join('');
 
   var body = document.getElementById('nm10-body');
   if(!body) return;
-  body.innerHTML = '<div style="font-size:9px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:#c879a8;margin-bottom:4px;">'+NM10_TOP[nm10Cur]+'</div>'
-    +'<div style="font-family:Unbounded,sans-serif;font-size:13px;font-weight:600;color:#1A1A2E;line-height:1.5;margin-bottom:18px;">'+q.q+'</div>'
+  body.innerHTML = '<div style="font-size:8px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:#c879a8;margin-bottom:3px;">'+NM10_TOP[nm10Cur]+'</div>'
+    +'<div style="font-family:Unbounded,sans-serif;font-size:11px;font-weight:600;color:#1A1A2E;line-height:1.5;margin-bottom:12px;">'+q.q+'</div>'
     +'<div>'+opts+'</div>'
-    +'<button id="nm10-nxt" onclick="nm10Next()" style="display:none;margin-top:14px;width:100%;padding:13px;background:linear-gradient(135deg,#c8b4e8,#e4aad4);color:#fff;border:none;border-radius:12px;font-family:Unbounded,sans-serif;font-size:12px;font-weight:700;cursor:pointer;"></button>';
+    +'<button id="nm10-nxt" onclick="nm10Next()" style="display:none;margin-top:10px;width:100%;padding:11px;background:linear-gradient(135deg,#c8b4e8,#e4aad4);color:#fff;border:none;border-radius:12px;font-family:Unbounded,sans-serif;font-size:11px;font-weight:700;cursor:pointer;"></button>';
 
   nm10Ans = false;
   body.scrollTop = 0;
