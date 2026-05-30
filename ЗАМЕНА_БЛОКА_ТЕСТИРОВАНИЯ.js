@@ -255,10 +255,10 @@ function nm10LoadQ(){
 
   var body = document.getElementById('nm10-body');
   if(!body) return;
-  body.innerHTML = '<div style="font-size:8px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:#c879a8;margin-bottom:3px;">'+NM10_TOP[nm10Cur]+'</div>'
+  body.innerHTML = '<div style="font-size:8px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:#c879a8;margin-bottom:3px;font-family:Montserrat,sans-serif;">'+NM10_TOP[nm10Cur]+'</div>'
     +'<div style="font-family:Unbounded,sans-serif;font-size:11px;font-weight:600;color:#1A1A2E;line-height:1.5;margin-bottom:12px;">'+q.q+'</div>'
     +'<div>'+opts+'</div>'
-    +'<button id="nm10-nxt" onclick="nm10Next()" style="display:none;margin-top:10px;width:100%;padding:11px;background:linear-gradient(135deg,#c8b4e8,#e4aad4);color:#fff;border:none;border-radius:12px;font-family:Unbounded,sans-serif;font-size:11px;font-weight:700;cursor:pointer;"></button>';
+    +'<button id="nm10-nxt" onclick="nm10Next()" style="display:none;margin-top:10px;width:100%;box-sizing:border-box;padding:11px;background:linear-gradient(135deg,#c8b4e8,#e4aad4);color:#fff;border:none;border-radius:10px;font-family:Unbounded,sans-serif;font-size:11px;font-weight:700;cursor:pointer;letter-spacing:.02em;"></button>';
 
   nm10Ans = false;
   body.scrollTop = 0;
