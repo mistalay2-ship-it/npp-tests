@@ -217,7 +217,7 @@ function nm10OpenTest(){
 
   /* *** ИСПРАВЛЕНО: высота окна ограничена, содержимое прокручивается *** */
   var html = '<div id="nm10Modal" onclick="nm10CloseIfOvl(event)" style="position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,.55);z-index:99999;display:flex;align-items:center;justify-content:center;padding:16px;box-sizing:border-box;">'
-    +'<div style="width:100%;max-width:700px;border-radius:24px;overflow:hidden;background:#fff;height:88vh;max-height:88vh;display:flex;flex-direction:column;box-shadow:0 24px 80px rgba(0,0,0,.25);">'
+    +'<div style="width:100%;max-width:660px;border-radius:24px;overflow:hidden;background:#fff;max-height:92vh;display:flex;flex-direction:column;box-shadow:0 24px 80px rgba(0,0,0,.25);">'
     +'<div style="padding:18px 22px 14px;background:linear-gradient(135deg,#d4c4f0,#e4aad4);position:relative;flex-shrink:0;">'
     +'<button onclick="nm10Close()" style="position:absolute;top:12px;right:12px;background:rgba(255,255,255,.3);border:none;border-radius:50%;width:28px;height:28px;cursor:pointer;font-size:14px;color:#fff;display:flex;align-items:center;justify-content:center;line-height:1;">✕</button>'
     +'<div style="font-size:9px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:rgba(255,255,255,.8);margin-bottom:4px;">Модуль 10 · Итоговый тест</div>'
