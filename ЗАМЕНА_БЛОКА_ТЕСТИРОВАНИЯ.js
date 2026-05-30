@@ -213,7 +213,7 @@ function nm10OpenTest(){
   if(nm10State.att >= NM10_MAX_ATT){ nppToast('Все попытки использованы. Обратитесь к куратору.'); return; }
   if(!nppIsModOpen(10)){ nppToast('Модуль ещё не открыт.'); return; }
 
-  nm10Cur=0; nm10Sc=0; nm10Ans=false; nm10Miss=[]; nm10IsOpen=true;
+  nm10Cur=0; nm10Sc=0; nm10Ans=false; nm10Miss=[]; nm10IsOpen=true; nm10SelIdx=-1;
 
   /* *** ИСПРАВЛЕНО: высота окна ограничена, содержимое прокручивается *** */
   var html = '<div id="nm10Modal" onclick="nm10CloseIfOvl(event)" style="position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(80,40,100,.35);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);z-index:99999;display:flex;align-items:center;justify-content:center;padding:20px;box-sizing:border-box;">'
@@ -264,24 +264,22 @@ function nm10LoadQ(){
   body.scrollTop = 0;
 }
 
+/* Текущий выбранный вариант (до фиксации) */
+var nm10SelIdx = -1;
+
 function nm10Answer(idx){
-  if(nm10Ans) return;
-  nm10Ans = true;
-  var q = NM10_QS[nm10Cur];
+  nm10SelIdx = idx;
   var btns = document.querySelectorAll('#nm10Modal .nm10-opt');
   btns.forEach(function(b,i){
-    b.disabled = true;
-    b.style.cursor = 'default';
     b.style.opacity = '0.5';
+    b.style.background = '#FAFAFA';
+    b.style.borderColor = '#E8E8E8';
     if(i === idx){
       b.style.opacity = '1';
       b.style.background = '#F0EEF8';
       b.style.borderColor = '#9b7ed4';
     }
   });
-  if(idx === q.a) nm10Sc++;
-  else nm10Miss.push({i:nm10Cur, ch:idx});
-
   var nxt = document.getElementById('nm10-nxt');
   if(nxt){
     nxt.style.display = 'block';
@@ -290,6 +288,15 @@ function nm10Answer(idx){
 }
 
 function nm10Next(){
+  /* Фиксируем ответ только здесь */
+  if(nm10SelIdx < 0) return;
+  var q = NM10_QS[nm10Cur];
+  /* Блокируем кнопки визуально */
+  var btns = document.querySelectorAll('#nm10Modal .nm10-opt');
+  btns.forEach(function(b){ b.disabled = true; b.style.cursor = 'default'; });
+  if(nm10SelIdx === q.a) nm10Sc++;
+  else nm10Miss.push({i:nm10Cur, ch:nm10SelIdx});
+  nm10SelIdx = -1;
   nm10Cur++;
   if(nm10Cur >= NM10_QS.length) nm10ShowResult();
   else nm10LoadQ();
@@ -358,7 +365,7 @@ async function nm10ShowResult(){
 
 function nm10Restart(){
   if(nm10State.att >= NM10_MAX_ATT){ nppToast('Все попытки использованы.'); return; }
-  nm10Cur=0; nm10Sc=0; nm10Ans=false; nm10Miss=[];
+  nm10Cur=0; nm10Sc=0; nm10Ans=false; nm10Miss=[]; nm10SelIdx=-1;
   nm10LoadQ();
   var body = document.getElementById('nm10-body');
   if(body) body.scrollTop=0;
