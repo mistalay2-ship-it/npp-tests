@@ -217,16 +217,16 @@ function nm10OpenTest(){
 
   /* *** ИСПРАВЛЕНО: высота окна ограничена, содержимое прокручивается *** */
   var html = '<div id="nm10Modal" onclick="nm10CloseIfOvl(event)" style="position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(80,40,100,.35);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);z-index:99999;display:flex;align-items:center;justify-content:center;padding:20px;box-sizing:border-box;">'
-    +'<div style="width:100%;max-width:560px;border-radius:24px;overflow:hidden;background:#fff;max-height:86vh;display:flex;flex-direction:column;box-shadow:0 24px 80px rgba(120,60,160,.3);">'
-    +'<div style="padding:18px 22px 14px;background:linear-gradient(135deg,#d4c4f0,#e4aad4);position:relative;flex-shrink:0;">'
-    +'<button onclick="nm10Close()" style="position:absolute;top:12px;right:12px;background:rgba(255,255,255,.3);border:none;border-radius:50%;width:28px;height:28px;cursor:pointer;font-size:14px;color:#fff;display:flex;align-items:center;justify-content:center;line-height:1;">✕</button>'
-    +'<div style="font-size:9px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:rgba(255,255,255,.8);margin-bottom:4px;">Модуль 10 · Итоговый тест</div>'
-    +'<div style="font-size:15px;font-weight:700;color:#fff;font-family:Unbounded,sans-serif;">Анатомия голоса</div>'
-    +'<div style="margin-top:8px;display:flex;align-items:center;gap:10px;">'
+    +'<div style="width:100%;max-width:680px;border-radius:24px;overflow:hidden;background:#fff;max-height:90vh;display:flex;flex-direction:column;box-shadow:0 24px 80px rgba(120,60,160,.3);">'
+    +'<div style="padding:20px 24px 16px;background:linear-gradient(135deg,#d4c4f0,#e4aad4);position:relative;flex-shrink:0;">'
+    +'<button onclick="nm10Close()" style="position:absolute;top:12px;right:12px;background:rgba(255,255,255,.3);border:none;border-radius:50%;width:32px;height:32px;cursor:pointer;font-size:16px;color:#fff;display:flex;align-items:center;justify-content:center;line-height:1;">✕</button>'
+    +'<div style="font-size:10px;font-weight:600;letter-spacing:1.5px;text-transform:uppercase;color:rgba(255,255,255,.85);margin-bottom:5px;font-family:Montserrat,sans-serif;">Модуль 10 · Итоговый тест</div>'
+    +'<div style="font-size:18px;font-weight:700;color:#fff;font-family:Unbounded,sans-serif;">Анатомия голоса</div>'
+    +'<div style="margin-top:10px;display:flex;align-items:center;gap:10px;">'
     +'<div style="flex:1;height:3px;background:rgba(255,255,255,.3);border-radius:3px;overflow:hidden;"><div id="nm10-prog" style="height:100%;width:0%;background:#fff;border-radius:3px;transition:width .3s;"></div></div>'
-    +'<span id="nm10-prog-lbl" style="font-size:10px;color:rgba(255,255,255,.85);white-space:nowrap;font-weight:600;">1 / 40</span>'
+    +'<span id="nm10-prog-lbl" style="font-size:11px;color:rgba(255,255,255,.85);white-space:nowrap;font-weight:600;font-family:Montserrat,sans-serif;">1 / 40</span>'
     +'</div></div>'
-    +'<div id="nm10-body" style="overflow-y:auto;overflow-x:hidden;flex:1;padding:16px 20px;"></div>'
+    +'<div id="nm10-body" style="overflow-y:auto;overflow-x:hidden;flex:1;padding:20px 24px;"></div>'
     +'</div></div>';
 
   var old = document.getElementById('nm10Modal');
@@ -248,17 +248,17 @@ function nm10LoadQ(){
 
   var L = ['А','Б','В','Г'];
   var opts = q.o.map(function(o,i){
-    return '<button class="nm10-opt" onclick="nm10Answer('+i+')" style="display:flex;align-items:center;gap:10px;background:#FAFAFA;border:1.5px solid #E8E8E8;border-radius:10px;padding:9px 12px;cursor:pointer;font-family:Montserrat,sans-serif;font-size:12px;color:#333;line-height:1.4;text-align:left;width:100%;box-sizing:border-box;margin-bottom:6px;transition:all .18s;">'
-      +'<span style="width:22px;height:22px;flex-shrink:0;border-radius:6px;background:rgba(200,180,240,.15);display:flex;align-items:center;justify-content:center;font-family:Unbounded,sans-serif;font-size:9px;font-weight:700;color:#9b7ed4;">'+L[i]+'</span>'
+    return '<button class="nm10-opt" onclick="nm10Answer('+i+')" style="display:flex;align-items:center;gap:12px;background:#FAFAFA;border:1.5px solid #E8E8E8;border-radius:12px;padding:12px 16px;cursor:pointer;font-family:Montserrat,sans-serif;font-size:14px;color:#333;line-height:1.4;text-align:left;width:100%;box-sizing:border-box;margin-bottom:8px;transition:all .18s;">'
+      +'<span style="width:26px;height:26px;flex-shrink:0;border-radius:7px;background:rgba(200,180,240,.15);display:flex;align-items:center;justify-content:center;font-family:Unbounded,sans-serif;font-size:10px;font-weight:700;color:#9b7ed4;">'+L[i]+'</span>'
       +'<span style="min-width:0;word-break:break-word;">'+o+'</span></button>';
   }).join('');
 
   var body = document.getElementById('nm10-body');
   if(!body) return;
-  body.innerHTML = '<div style="font-size:8px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:#c879a8;margin-bottom:3px;font-family:Montserrat,sans-serif;">'+NM10_TOP[nm10Cur]+'</div>'
-    +'<div style="font-family:Unbounded,sans-serif;font-size:11px;font-weight:600;color:#1A1A2E;line-height:1.5;margin-bottom:12px;">'+q.q+'</div>'
+  body.innerHTML = '<div style="font-size:9px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:#c879a8;margin-bottom:6px;font-family:Montserrat,sans-serif;">'+NM10_TOP[nm10Cur]+'</div>'
+    +'<div style="font-family:Unbounded,sans-serif;font-size:13px;font-weight:600;color:#1A1A2E;line-height:1.55;margin-bottom:16px;">'+q.q+'</div>'
     +'<div>'+opts+'</div>'
-    +'<button id="nm10-nxt" onclick="nm10Next()" style="display:none;margin-top:10px;width:100%;box-sizing:border-box;padding:11px;background:linear-gradient(135deg,#c8b4e8,#e4aad4);color:#fff;border:none;border-radius:10px;font-family:Unbounded,sans-serif;font-size:11px;font-weight:700;cursor:pointer;letter-spacing:.02em;"></button>';
+    +'<button id="nm10-nxt" onclick="nm10Next()" style="display:none;margin-top:12px;width:100%;box-sizing:border-box;padding:13px;background:linear-gradient(135deg,#c8b4e8,#e4aad4);color:#fff;border:none;border-radius:12px;font-family:Unbounded,sans-serif;font-size:12px;font-weight:700;cursor:pointer;letter-spacing:.02em;"></button>';
 
   nm10Ans = false;
   body.scrollTop = 0;
