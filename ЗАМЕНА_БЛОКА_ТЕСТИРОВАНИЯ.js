@@ -1,30 +1,8 @@
 /* ==========================================================
    РАЗДЕЛ «ТЕСТИРОВАНИЕ» — Модуль 10, Анатомия голоса
    Данные хранятся в Supabase (таблица quiz_results)
-   
-   ТАБЛИЦА в Supabase — нужно создать один раз:
-   
-   CREATE TABLE quiz_results (
-     id uuid DEFAULT gen_random_uuid() PRIMARY KEY,
-     user_id uuid REFERENCES auth.users(id) ON DELETE CASCADE,
-     test_id text NOT NULL,
-     attempt integer NOT NULL DEFAULT 1,
-     score integer NOT NULL,
-     best_score integer NOT NULL,
-     passed boolean NOT NULL DEFAULT false,
-     total_questions integer NOT NULL,
-     mistakes jsonb,
-     created_at timestamptz DEFAULT now()
-   );
-   ALTER TABLE quiz_results ENABLE ROW LEVEL SECURITY;
-   CREATE POLICY "Users can read own results" ON quiz_results
-     FOR SELECT USING (auth.uid() = user_id);
-   CREATE POLICY "Users can insert own results" ON quiz_results
-     FOR INSERT WITH CHECK (auth.uid() = user_id);
-   
    ========================================================== */
 
-/* ---------- данные теста ---------- */
 var NM10_MAX_ATT = 3;
 var NM10_PASS    = 36;
 var NM10_TEST_ID = 'mod10_anatomy_v1';
@@ -46,7 +24,7 @@ var NM10_QS = [
 {q:'Что делают щиточерпаловидная, поперечночерпаловидная и черпалонадгортанная мышцы при совместном сокращении?',o:['Расширяют голосовую щель','Натягивают голосовые связки','Работают как сфинктер, закрывая гортань','Поднимают надгортанник'],a:2,e:'Действуя вместе, они работают как сфинктер — закрывают гортань при каждом глотании.'},
 {q:'Щитоподъязычная мышца при стабилизированной подъязычной кости выполняет функцию:',o:['Опускает гортань вниз','Приподнимает гортань вверх','Натягивает голосовые складки','Расширяет голосовую щель'],a:1,e:'При фиксированной подъязычной кости щитоподъязычная мышца приподнимает гортань.'},
 {q:'На сколько функциональных групп делятся внутренние мышцы гортани?',o:['На две','На три','На четыре','На пять'],a:2,e:'Четыре группы: суживающие, расширяющие, напрягающие и расслабляющие.'},
-{q:'Что делает щитонадгортанная мышца?',o:['Опускает надгортанник, закрывая гортань','Поднимает надгортанник и открывает вход в гортань','Натягивает голосовые связки','Расширяет голосовую щель'],a:1,e:'Щитонадгортанная мышца поднимает надгортанник и открывает вход в гортань.'},
+{q:'Что делает щитонадгортанная мышца?',o:['Опускает надгортанник, закрывая гортань','Поднимает надгортанник и открывает вход в гортань','Натягивает голосовые складки','Расширяет голосовую щель'],a:1,e:'Щитонадгортанная мышца поднимает надгортанник и открывает вход в гортань.'},
 {q:'Как запомнить механику движения внутренних мышц гортани?',o:['По длине мышцы','По расположению на шее','Название отражает направление волокна','По цвету мышечной ткани'],a:2,e:'Название мышцы указывает на направление её хода.'},
 {q:'Как правильно называть «ложные голосовые связки»?',o:['Истинные голосовые связки','Складки преддверия или желудочковые складки','Эластические складки','Мембранозные складки'],a:1,e:'Современные названия: складки преддверия или желудочковые складки.'},
 {q:'Какую форму имеют голосовые складки при виде сверху?',o:['Форму буквы U','Форму буквы О','Форму латинской буквы V','Форму буквы Х'],a:2,e:'Голосовые складки имеют форму латинской буквы V: острие вперёд к щитовидному хрящу.'},
@@ -76,11 +54,9 @@ var NM10_QS = [
 {q:'Где находится треугольная ямка черпаловидного хряща?',o:['На вершине хряща','Между голосовым и мышечным отростками — крепится голосовая мышца','На нижней поверхности','На задней поверхности'],a:1,e:'Треугольная ямка расположена между голосовым и мышечным отростками черпаловидного хряща.'}
 ];
 
-/* ---------- состояние теста в памяти ---------- */
 var nm10State = {att:0, best:null, loaded:false};
 var nm10Cur=0, nm10Sc=0, nm10Ans=false, nm10Miss=[], nm10IsOpen=false;
 
-/* ---------- загрузка состояния из Supabase ---------- */
 async function nm10LoadState(){
   try{
     var u = await sb.auth.getUser();
@@ -102,7 +78,6 @@ async function nm10LoadState(){
   }
 }
 
-/* ---------- сохранение результата в Supabase ---------- */
 async function nm10SaveResult(score, mistakes){
   try{
     var u = await sb.auth.getUser();
@@ -128,7 +103,6 @@ async function nm10SaveResult(score, mistakes){
   }
 }
 
-/* ---------- рендер раздела тестирования в ЛК ---------- */
 function nppBTests(){
   if(!cfg) return;
   var el = document.getElementById('TEST_GRID');
@@ -140,7 +114,6 @@ function nppBTests(){
 
   var lkIco = '<svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0110 0v4"/></svg>';
 
-  /* Тариф не включает модуль 10 */
   if(!mod10InTariff){
     el.innerHTML = '<div style="display:flex;flex-direction:column;align-items:center;gap:14px;padding:52px 24px;text-align:center;">'
       +'<div style="width:60px;height:60px;border-radius:18px;background:var(--bg3);display:flex;align-items:center;justify-content:center;opacity:.5;">'+lkIco+'</div>'
@@ -149,7 +122,6 @@ function nppBTests(){
     return;
   }
 
-  /* Если данные ещё не загружены из Supabase — грузим */
   if(!nm10State.loaded){
     el.innerHTML = '<div style="padding:40px 24px;text-align:center;color:var(--muted);font-size:13px;">Загружаем данные...</div>';
     nm10LoadState().then(function(){ nppBTests(); });
@@ -158,7 +130,6 @@ function nppBTests(){
 
   var mod10Progress = mod10Open ? DONE[9] : 0;
 
-  /* Шапка с прогрессом модуля */
   var html = '<div style="background:linear-gradient(135deg,rgba(200,180,240,.1),rgba(247,197,213,.08));border:1px solid rgba(200,180,240,.22);border-radius:18px;padding:18px 22px;margin-bottom:20px;">'
     +'<div style="font-size:9px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--muted);margin-bottom:10px;">Модуль 10 — Анатомия голоса · 40 вопросов</div>';
 
@@ -174,24 +145,20 @@ function nppBTests(){
   }
   html += '</div>';
 
-  /* Карточка теста */
   var att = nm10State.att;
   var best = nm10State.best;
   var rem = Math.max(0, NM10_MAX_ATT - att);
   var passed = best !== null && best >= NM10_PASS;
   var isBlocked = att >= NM10_MAX_ATT;
   var isDateLock = !mod10Open;
-  var lessonLock = mod10Open && mod10Progress < NM10_QS.length; /* все уроки модуля */
 
-  /* Цвет полоски слева */
   var accentColor = passed ? 'linear-gradient(180deg,#a0d8b8,#80c8a0)'
     : isBlocked ? '#e8a0a0'
-    : isDateLock || lessonLock ? 'var(--bg3)'
+    : isDateLock ? 'var(--bg3)'
     : 'linear-gradient(180deg,#c8b4e8,#e8a870)';
 
   var leftBar = '<div style="position:absolute;left:0;top:0;bottom:0;width:3px;border-radius:16px 0 0 16px;background:'+accentColor+'"></div>';
 
-  /* Статус справа */
   var statusHtml;
   var checkIco = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>';
 
@@ -209,7 +176,6 @@ function nppBTests(){
     statusHtml = '<span class="test-status ts" style="flex-shrink:0;">'+(att>0?'Пройти ещё раз':'Пройти тест')+'</span>';
   }
 
-  /* Инфо о попытках */
   var attInfo = '';
   if(att > 0){
     var dots = '';
@@ -240,32 +206,25 @@ function nppBTests(){
     +'</div>';
 
   el.innerHTML = html;
-
-  /* Обновляем сертификат */
   nppBCerts();
 }
 
-/* ---------- открытие теста в модальном окне ---------- */
 function nm10OpenTest(){
   if(nm10State.att >= NM10_MAX_ATT){ nppToast('Все попытки использованы. Обратитесь к куратору.'); return; }
   if(!nppIsModOpen(10)){ nppToast('Модуль ещё не открыт.'); return; }
 
   nm10Cur=0; nm10Sc=0; nm10Ans=false; nm10Miss=[]; nm10IsOpen=true;
 
-  var html = '<div class="test-modal-overlay" id="nm10Modal" onclick="nm10CloseIfOvl(event)">'
-    +'<div class="test-modal" style="max-width:700px;padding:0;border-radius:24px;overflow:hidden;background:#fff;max-height:90vh;display:flex;flex-direction:column;">'
-
-    /* Шапка */
+  var html = '<div id="nm10Modal" onclick="nm10CloseIfOvl(event)" style="position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,.55);z-index:99999;display:flex;align-items:center;justify-content:center;padding:16px;box-sizing:border-box;">'
+    +'<div style="width:100%;max-width:700px;border-radius:24px;overflow:hidden;background:#fff;max-height:90vh;display:flex;flex-direction:column;box-shadow:0 24px 80px rgba(0,0,0,.25);">'
     +'<div style="padding:18px 22px 14px;background:linear-gradient(135deg,#d4c4f0,#e4aad4);position:relative;flex-shrink:0;">'
-    +'<button class="test-modal-close" onclick="nm10Close()" style="top:12px;right:12px;background:rgba(255,255,255,.3);border:none;border-radius:50%;width:28px;height:28px;cursor:pointer;font-size:14px;color:#fff;display:flex;align-items:center;justify-content:center;">✕</button>'
+    +'<button onclick="nm10Close()" style="position:absolute;top:12px;right:12px;background:rgba(255,255,255,.3);border:none;border-radius:50%;width:28px;height:28px;cursor:pointer;font-size:14px;color:#fff;display:flex;align-items:center;justify-content:center;line-height:1;">✕</button>'
     +'<div style="font-size:9px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:rgba(255,255,255,.8);margin-bottom:4px;">Модуль 10 · Итоговый тест</div>'
     +'<div style="font-size:15px;font-weight:700;color:#fff;font-family:Unbounded,sans-serif;">Анатомия голоса</div>'
     +'<div style="margin-top:8px;display:flex;align-items:center;gap:10px;">'
     +'<div style="flex:1;height:3px;background:rgba(255,255,255,.3);border-radius:3px;overflow:hidden;"><div id="nm10-prog" style="height:100%;width:0%;background:#fff;border-radius:3px;transition:width .3s;"></div></div>'
     +'<span id="nm10-prog-lbl" style="font-size:10px;color:rgba(255,255,255,.85);white-space:nowrap;font-weight:600;">1 / 40</span>'
     +'</div></div>'
-
-    /* Тело — вопрос или результат */
     +'<div id="nm10-body" style="overflow-y:auto;flex:1;padding:20px 22px;"></div>'
     +'</div></div>';
 
@@ -273,8 +232,7 @@ function nm10OpenTest(){
   if(old) old.remove();
   var el = document.createElement('div');
   el.innerHTML = html;
-  var root = document.getElementById('npp-root') || document.body;
-root.appendChild(el.firstChild);
+  document.body.appendChild(el.firstChild);
 
   nm10LoadQ();
 }
@@ -287,9 +245,9 @@ function nm10LoadQ(){
   if(prog) prog.style.width = pct + '%';
   if(lbl) lbl.textContent = (nm10Cur+1) + ' / ' + NM10_QS.length;
 
+  var L = ['А','Б','В','Г'];
   var opts = q.o.map(function(o,i){
-    var L = ['А','Б','В','Г'];
-    return '<button class="nm10-opt" id="nm10-opt-'+i+'" onclick="nm10Answer('+i+')" style="display:flex;align-items:flex-start;gap:12px;background:#FAFAFA;border:1.5px solid #E8E8E8;border-radius:11px;padding:12px 14px;cursor:pointer;font-family:Montserrat,sans-serif;font-size:13px;color:#333;line-height:1.5;text-align:left;width:100%;margin-bottom:8px;transition:all .18s;">'
+    return '<button class="nm10-opt" onclick="nm10Answer('+i+')" style="display:flex;align-items:flex-start;gap:12px;background:#FAFAFA;border:1.5px solid #E8E8E8;border-radius:11px;padding:12px 14px;cursor:pointer;font-family:Montserrat,sans-serif;font-size:13px;color:#333;line-height:1.5;text-align:left;width:100%;margin-bottom:8px;transition:all .18s;">'
       +'<span style="width:25px;height:25px;flex-shrink:0;border-radius:7px;background:rgba(200,180,240,.15);display:flex;align-items:center;justify-content:center;font-family:Unbounded,sans-serif;font-size:10px;font-weight:700;color:#9b7ed4;">'+L[i]+'</span>'
       +'<span>'+o+'</span></button>';
   }).join('');
@@ -298,10 +256,7 @@ function nm10LoadQ(){
   if(!body) return;
   body.innerHTML = '<div style="font-size:9px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:#c879a8;margin-bottom:4px;">'+NM10_TOP[nm10Cur]+'</div>'
     +'<div style="font-family:Unbounded,sans-serif;font-size:13px;font-weight:600;color:#1A1A2E;line-height:1.5;margin-bottom:18px;">'+q.q+'</div>'
-    +'<div id="nm10-opts">'+opts+'</div>'
-    +'<div id="nm10-expl" style="display:none;margin-top:13px;border-radius:10px;border-left:4px solid #c8b4e8;background:rgba(200,180,240,.1);padding:12px 14px;font-size:12px;line-height:1.7;color:#5a3a8a;">'
-    +'<div style="font-size:9px;font-weight:700;letter-spacing:.08em;color:#9b7ed4;margin-bottom:4px;text-transform:uppercase;">Пояснение</div>'
-    +'<span id="nm10-expl-txt"></span></div>'
+    +'<div>'+opts+'</div>'
     +'<button id="nm10-nxt" onclick="nm10Next()" style="display:none;margin-top:14px;width:100%;padding:13px;background:linear-gradient(135deg,#c8b4e8,#e4aad4);color:#fff;border:none;border-radius:12px;font-family:Unbounded,sans-serif;font-size:12px;font-weight:700;cursor:pointer;"></button>';
 
   nm10Ans = false;
@@ -312,22 +267,20 @@ function nm10Answer(idx){
   if(nm10Ans) return;
   nm10Ans = true;
   var q = NM10_QS[nm10Cur];
-  var btns = document.querySelectorAll('.nm10-opt');
+  var btns = document.querySelectorAll('#nm10Modal .nm10-opt');
   btns.forEach(function(b,i){
     b.disabled = true;
     b.style.cursor = 'default';
-    if(i === q.a){
-      b.style.background = '#F0FFF4'; b.style.borderColor = '#48BB78'; b.style.color = '#276749';
-    } else if(i === idx && idx !== q.a){
-      b.style.background = '#FFF5F5'; b.style.borderColor = '#FC8181'; b.style.color = '#9B2C2C';
+    /* *** Подсвечиваем ТОЛЬКО неправильный выбор, правильный НЕ показываем *** */
+    if(i === idx && idx !== q.a){
+      b.style.background = '#FFF5F5';
+      b.style.borderColor = '#FC8181';
+      b.style.color = '#9B2C2C';
     }
   });
   if(idx === q.a) nm10Sc++;
   else nm10Miss.push({i:nm10Cur, ch:idx});
-  var expl = document.getElementById('nm10-expl');
-  var explTxt = document.getElementById('nm10-expl-txt');
-  if(expl){ expl.style.display='block'; }
-  if(explTxt){ explTxt.textContent = q.e; }
+
   var nxt = document.getElementById('nm10-nxt');
   if(nxt){
     nxt.style.display = 'block';
@@ -337,12 +290,11 @@ function nm10Answer(idx){
 
 function nm10Next(){
   nm10Cur++;
-  if(nm10Cur >= NM10_QS.length){ nm10ShowResult(); }
-  else { nm10LoadQ(); }
+  if(nm10Cur >= NM10_QS.length) nm10ShowResult();
+  else nm10LoadQ();
 }
 
 async function nm10ShowResult(){
-  /* Сначала сохраняем в Supabase */
   await nm10SaveResult(nm10Sc, nm10Miss);
 
   var prog = document.getElementById('nm10-prog');
@@ -353,6 +305,7 @@ async function nm10ShowResult(){
   var pct = Math.round((nm10Sc / NM10_QS.length) * 100);
   var passed = nm10Sc >= NM10_PASS;
   var rem = Math.max(0, NM10_MAX_ATT - nm10State.att);
+  var isLastAttempt = nm10State.att >= NM10_MAX_ATT;
 
   var msgs = {100:'Идеальный результат! Вы в совершенстве знаете анатомию вокала.',
     90:'Зачёт! Все темы изучены на высоком уровне.',
@@ -361,8 +314,9 @@ async function nm10ShowResult(){
     0:'Нужно повторить все уроки модуля.'};
   var msgKey = Object.keys(msgs).reverse().find(function(k){ return pct >= Number(k); });
 
+  /* *** Разбор ошибок — только после 3-й (последней) попытки *** */
   var missHtml = '';
-  if(nm10Miss.length > 0){
+  if(nm10Miss.length > 0 && isLastAttempt){
     missHtml = '<div style="margin-top:16px;"><div style="font-family:Unbounded,sans-serif;font-size:11px;font-weight:700;color:#1A1A2E;margin-bottom:10px;">Разбор ошибок ('+nm10Miss.length+')</div>';
     nm10Miss.forEach(function(m){
       var q = NM10_QS[m.i];
@@ -379,7 +333,7 @@ async function nm10ShowResult(){
 
   var retryBtn = rem > 0
     ? '<button onclick="nm10Restart()" style="width:100%;padding:13px;background:linear-gradient(135deg,#c8b4e8,#e4aad4);color:#fff;border:none;border-radius:12px;font-family:Unbounded,sans-serif;font-size:12px;font-weight:700;cursor:pointer;margin-bottom:12px;">Пройти ещё раз (осталось: '+rem+')</button>'
-    : '<div style="background:var(--bg2);border-radius:12px;padding:14px 16px;margin-bottom:12px;text-align:center;border:1.5px solid var(--border);"><div style="font-family:Unbounded,sans-serif;font-size:12px;font-weight:700;color:#555;margin-bottom:5px;">Все попытки использованы</div><div style="font-size:12px;color:#888;line-height:1.7;">Ваш лучший результат сохранён.<br>Для разблокировки обратитесь к куратору.</div></div>';
+    : '<div style="background:#f8f8f8;border-radius:12px;padding:14px 16px;margin-bottom:12px;text-align:center;border:1.5px solid #eee;"><div style="font-family:Unbounded,sans-serif;font-size:12px;font-weight:700;color:#555;margin-bottom:5px;">Все попытки использованы</div><div style="font-size:12px;color:#888;line-height:1.7;">Ваш лучший результат сохранён.<br>Для разблокировки обратитесь к куратору.</div></div>';
 
   var body = document.getElementById('nm10-body');
   if(!body) return;
@@ -390,17 +344,15 @@ async function nm10ShowResult(){
     +'<div style="font-family:Unbounded,sans-serif;font-size:15px;font-weight:800;color:#fff;margin-bottom:4px;">'+(passed?'Зачёт получен!':'Не зачтено')+'</div>'
     +'<div style="font-size:12px;color:rgba(255,255,255,.85);line-height:1.6;">'+msgs[msgKey]+'</div></div>'
     +'<div style="display:grid;grid-template-columns:repeat(3,1fr);gap:9px;margin-bottom:14px;">'
-    +'<div style="background:var(--bg2);border-radius:12px;padding:12px;text-align:center;"><div style="font-family:Unbounded,sans-serif;font-size:22px;font-weight:800;color:#48BB78;">'+nm10Sc+'</div><div style="font-size:10px;color:#888;">Правильно</div></div>'
-    +'<div style="background:var(--bg2);border-radius:12px;padding:12px;text-align:center;"><div style="font-family:Unbounded,sans-serif;font-size:22px;font-weight:800;color:#FC8181;">'+(NM10_QS.length-nm10Sc)+'</div><div style="font-size:10px;color:#888;">Ошибок</div></div>'
-    +'<div style="background:var(--bg2);border-radius:12px;padding:12px;text-align:center;"><div style="font-family:Unbounded,sans-serif;font-size:22px;font-weight:800;color:#c879a8;">'+pct+'%</div><div style="font-size:10px;color:#888;">Результат</div></div>'
+    +'<div style="background:#f8f8f8;border-radius:12px;padding:12px;text-align:center;"><div style="font-family:Unbounded,sans-serif;font-size:22px;font-weight:800;color:#48BB78;">'+nm10Sc+'</div><div style="font-size:10px;color:#888;">Правильно</div></div>'
+    +'<div style="background:#f8f8f8;border-radius:12px;padding:12px;text-align:center;"><div style="font-family:Unbounded,sans-serif;font-size:22px;font-weight:800;color:#FC8181;">'+(NM10_QS.length-nm10Sc)+'</div><div style="font-size:10px;color:#888;">Ошибок</div></div>'
+    +'<div style="background:#f8f8f8;border-radius:12px;padding:12px;text-align:center;"><div style="font-family:Unbounded,sans-serif;font-size:22px;font-weight:800;color:#c879a8;">'+pct+'%</div><div style="font-size:10px;color:#888;">Результат</div></div>'
     +'</div>'
     +(nm10State.best!==null?'<div style="background:rgba(200,180,240,.1);border:1px solid rgba(200,180,240,.3);border-radius:9px;padding:9px 13px;margin-bottom:14px;display:flex;align-items:center;justify-content:space-between;"><span style="font-size:11px;color:#888;font-weight:500;">Лучший результат за все попытки</span><span style="font-family:Unbounded,sans-serif;font-size:14px;font-weight:700;color:#c879a8;">'+nm10State.best+' из 40</span></div>':'')
     +retryBtn
     +missHtml;
 
   body.scrollTop = 0;
-
-  /* Обновляем плашки в разделе тестирования */
   nppBTests();
 }
 
@@ -423,23 +375,20 @@ function nm10CloseIfOvl(e){
   if(e.target.id==='nm10Modal') nm10Close();
 }
 
-/* Сброс состояния при логауте */
 var _origNppLogout = window.nppLogout;
 window.nppLogout = function(){
   nm10State = {att:0, best:null, loaded:false};
   if(_origNppLogout) _origNppLogout();
 };
 
-/* Экспорт глобальных функций */
-window.nm10OpenTest = nm10OpenTest;
-window.nm10Answer   = nm10Answer;
-window.nm10Next     = nm10Next;
-window.nm10Close    = nm10Close;
+window.nm10OpenTest   = nm10OpenTest;
+window.nm10Answer     = nm10Answer;
+window.nm10Next       = nm10Next;
+window.nm10Close      = nm10Close;
 window.nm10CloseIfOvl = nm10CloseIfOvl;
-window.nm10Restart  = nm10Restart;
-window.nppBTests    = nppBTests;
+window.nm10Restart    = nm10Restart;
+window.nppBTests      = nppBTests;
 
-/* Для совместимости со старыми вызовами (сертификаты проверяют isDone через этот метод) */
 function nppIsTestPassed(testId){
   if(testId === 't10_exam' || testId === NM10_TEST_ID){
     return nm10State.best !== null && nm10State.best >= NM10_PASS;
